@@ -10,20 +10,64 @@ namespace SnailMatix
         {
             int[,] test = ReadMatrix();
             WriteMatrix(test);
+            Console.WriteLine("Snail matrix");
+            var snail = SnailTrasform(test);
+            WriteMatrix(snail);
             Console.ReadKey();
         }
         static int [,] SnailTrasform(int[,] m)
         {
             int[,] newMatrix = new int[m.GetLength(0),m.GetLength(1)];
-
-            for (int i = 0, new_i = 0; i < newMatrix.GetLength(0); i++, new_i++)
+            var iStep = -1;
+            var jStep = 1;
+            var goI = true;
+            var oi = 0;
+            var oj = 0;
+            var toi = m.GetLength(0) - 1;
+            var toj = m.GetLength(1) - 1;
+            var fromi = 0;
+            var fromj = 0;
+            for (int i = 0; i < newMatrix.GetLength(0); i ++)
             {
-                for (int j = 0; ;)
+                for (int j = 0; j < newMatrix.GetLength(1); j++)
                 {
-
+                    newMatrix[i, j] = m[oi, oj];
+                    if (goI && (iStep > 0 && oi == toi || iStep < 0 && oi == fromi))
+                    {
+                        if(iStep > 0)
+                        {
+                            toi--;
+                        }
+                        else
+                        {
+                            fromi++;
+                        }
+                        goI = false;
+                        iStep *= -1;                       
+                    }
+                    if (!goI && (jStep > 0 && oj == toj || jStep < 0 && oj == fromj))
+                    {
+                        if (jStep > 0)
+                        {
+                            toj--;
+                        }
+                        else
+                        {
+                            fromj++;
+                        }
+                        goI = true;
+                        jStep *= -1;
+                    }
+                    if (goI)
+                    {
+                        oi += iStep;
+                    }
+                    else
+                    {
+                        oj += jStep;
+                    }
                 }
             }
-
             return newMatrix;
         }
         static void WriteMatrix(int[,] mat)
