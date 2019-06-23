@@ -17,55 +17,54 @@ namespace SnailMatix
         }
         static int [,] SnailTrasform(int[,] m)
         {
-            int[,] newMatrix = new int[m.GetLength(0),m.GetLength(1)];
+            var toI = m.GetLength(0) - 1;
+            var toJ = m.GetLength(1) - 1;
+            int[,] newMatrix = new int[m.GetLength(0), m.GetLength(1)];
+            var fromI = 0;
+            var fromJ = 0;
+            var oI = 0;
+            var oJ = 0;
+            var goI = true;
             var iStep = -1;
             var jStep = 1;
-            var goI = true;
-            var oi = 0;
-            var oj = 0;
-            var toi = m.GetLength(0) - 1;
-            var toj = m.GetLength(1) - 1;
-            var fromi = 0;
-            var fromj = 0;
-            for (int i = 0; i < newMatrix.GetLength(0); i ++)
+            for (int i = 0; i < newMatrix.GetLength(0); i++)
             {
                 for (int j = 0; j < newMatrix.GetLength(1); j++)
                 {
-                    newMatrix[i, j] = m[oi, oj];
-                    if (goI && (iStep > 0 && oi == toi || iStep < 0 && oi == fromi))
+                    newMatrix[i, j] = m[oI, oJ];
+                    if (goI && iStep > 0 && oI == toI)
                     {
-                        if(iStep > 0)
-                        {
-                            toi--;
-                        }
-                        else
-                        {
-                            fromi++;
-                        }
+                        toI--;
                         goI = false;
-                        iStep *= -1;                       
+                        iStep *= -1;
                     }
-                    if (!goI && (jStep > 0 && oj == toj || jStep < 0 && oj == fromj))
+                    if (goI && iStep < 0 && oI == fromI)
                     {
-                        if (jStep > 0)
-                        {
-                            toj--;
-                        }
-                        else
-                        {
-                            fromj++;
-                        }
+                        fromI++;
+                        goI = false;
+                        iStep *= -1;
+                    }
+                    if (!goI && jStep > 0 && oJ == toJ)
+                    {
+                        toJ--;
+                        goI = true;
+                        jStep *= -1;
+                    }
+                    if (!goI && jStep < 0 && oJ == fromJ)
+                    {
+                        fromJ++;
                         goI = true;
                         jStep *= -1;
                     }
                     if (goI)
                     {
-                        oi += iStep;
+                        oI += iStep;
                     }
                     else
                     {
-                        oj += jStep;
+                        oJ += jStep;
                     }
+
                 }
             }
             return newMatrix;
