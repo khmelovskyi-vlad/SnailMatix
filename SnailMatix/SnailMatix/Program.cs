@@ -9,7 +9,6 @@ namespace SnailMatix
         static void Main(string[] args)
         {
             int[,] test = ReadMatrix();
-            WriteMatrix(test);
             Console.WriteLine("Snail matrix");
             var snail = SnailTrasform(test);
             WriteMatrix(snail);
@@ -95,19 +94,39 @@ namespace SnailMatix
             }
             return matrix;
         }
-        static int ReadIntUntil(params char[] untilSymbols)
+        static int ReadIntUntil(params char[] unitSymbol)
         {
             StringBuilder sb = new StringBuilder();
             while (true)
             {
-                var key = Console.ReadKey();
-                if (untilSymbols.Contains(key.KeyChar))
+                try
                 {
-                    return int.Parse(sb.ToString());
+                    var key = Console.ReadKey(true);
+                    if (key.Key != ConsoleKey.Enter)
+                    {
+                        Console.Write(key.KeyChar);
+                        if (key.Key == ConsoleKey.Escape)
+                        {
+                            throw new OperationCanceledException();
+                        }
+                        else if (key.Key == ConsoleKey.Backspace)
+                        {
+                            sb.Remove(sb.Length - 1, 1);
+                        }
+                        else if (unitSymbol.Contains(key.KeyChar))
+                        {
+                            return Int32.Parse(sb.ToString());
+                        }
+                        else
+                        {
+                            sb.Append(key.KeyChar);
+                        }
+                    }
                 }
-                else
+                catch (FormatException ex)
                 {
-                    sb.Append(key.KeyChar);
+                    sb.Remove(0, sb.Length);
+                    Console.Write($"Bed input {ex.Message}, try again or click Escape ");
                 }
             }
         }
@@ -122,14 +141,24 @@ namespace SnailMatix
         }
         static int ReadInt()
         {
-            var key = Console.ReadKey();
-            if (key.Key == ConsoleKey.Escape)
+            do
             {
-                throw new OperationCanceledException();
-            }
-            var line = Console.ReadLine();
-            var keyLine = $"{key.KeyChar}{line}";
-            return Int32.Parse(keyLine);
+                try
+                {
+                    var key = Console.ReadKey();
+                    if (key.Key == ConsoleKey.Escape)
+                    {
+                        throw new OperationCanceledException();
+                    }
+                    var line = Console.ReadLine();
+                    var keyLine = $"{key.KeyChar}{line}";
+                    return Int32.Parse(keyLine);
+                }
+                catch(FormatException ex)
+                {
+                    Console.WriteLine($"Bed input {ex.Message}, try again or click Escape");
+                }
+            } while (true);
         }
     }
 }
